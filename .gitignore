@@ -1,0 +1,4 @@
+# Ignore the following folders
+virtualenv
+__pycache__
+data/__pycache__

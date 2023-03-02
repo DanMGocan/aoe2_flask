@@ -1,0 +1,7 @@
+1. Create virtual environment [done]
+2. Add gitignore file [done]
+3. Create helper functions file [done]
+
+Database to be used for: 
+- strategies (?)
+- statistics
