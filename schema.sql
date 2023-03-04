@@ -1,12 +1,6 @@
 /* Delete this in production */
-DROP TABLE IF EXISTS units, civilizations, buildings, technologies;
+DROP TABLE IF EXISTS strategies, build_orders;
 
-CREATE TABLE units(
-    name TEXT NOT NULL,
-    civilization TEXT NOT NULL
-);
+CREATE TABLE strategies ()
 
-
-CREATE TABLE civilizations();
-CREATE TABLE buildings();
-CREATE TABLE technologies();
+CREATE TABLE build_orders ()
