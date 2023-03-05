@@ -1,13 +1,36 @@
 {% extends "base.html" %}
 
 {% block sorted_list_of_counters %}
-    <h5>{{ template_unit_name }} is countered by: </h5>
+
     <small> Formula to calculate counters is attacking_unit_attack + armour_class_bonus - [melle/pierce] armour</small>
     <small> Cost per unit is food * 0.85 + wood * 1 + gold * 1.15</small>
     <br>
 
-    {% for element in template_list_of_counters %}
-        <p class="m-0 p-0">{{ element[0] }} with a value of {{ "%.2f"|format(element[1]) }} damage per second.</p>
-        <p> Adjusted cost per unit of damage, per second is {{ "%.2f"|format(element[2]) }}</p>
-    {% endfor %}
+
+
+        {% if template_unit_name %}
+
+        <form method="POST">
+            {{ template_form.unit_name.label }} 
+            {{ template_form.unit_name(class_="form-control basicAutoComplete", type="text", autocomplete="off", value="") }}
+            {{ template_form.submit() }}
+        </form>
+
+            <h5>{{ template_unit_name }} is countered by: </h5>
+
+            {% for element in template_list_of_counters %}
+            <p class="m-0 p-0">{{ element[0] }} with a value of {{ "%.2f"|format(element[1]) }} damage per second.</p>
+            <p> Adjusted cost per unit of damage, per second is {{ "%.2f"|format(element[2]) }}</p>
+            {% endfor %}
+
+        {% else %}
+
+        <form method="POST">
+            {{ template_form.unit_name.label }} 
+            {{ template_form.unit_name(class_="form-control basicAutoComplete", type="text", autocomplete="off", value="") }}
+            {{ template_form.submit() }}
+        </form>
+
+        {% endif %}
+
 {% endblock %}

@@ -21,7 +21,8 @@ def create_units():
             "attack_speed": random.randrange(75, 150) / 100,
             "type": random.choice(types),
             "unique": bool(random.getrandbits(1)),
-            "cost": {}
+            "cost": {},
+            "image_url": ""
         }
 
         for j in range (0, 7):
@@ -47,11 +48,12 @@ def create_units():
 
     return units  
 
-# Function that calculates what unit counters what unit. The function is fed a unit_name and a dictionary
-# with all the units present in the game, together with what techs are active (based on user input). 
-# The function takes the initial attack value of a countering unit and adds to it any bonuses or armour class
-# bonuses. It then sorts them and returns an array of 3-length tuples (unit name, counters, costs)  
+
 def counter_unit(unit_name, unit_data, technology_data):
+    '''Function that calculates what unit counters what unit. The function is fed a unit_name and a dictionary
+    with all the units present in the game, together with what techs are active (based on user input). 
+    The function takes the initial attack value of a countering unit and adds to it any bonuses or armour class
+    bonuses. It then sorts them and returns an array of 3-length tuples (unit name, counters, costs)  '''
     counter_object = []
     resources_cost = 0
 
@@ -77,11 +79,14 @@ def counter_unit(unit_name, unit_data, technology_data):
         # Adding armour and attack types into the counter value
         counter_value -= unit_data[unit_name][f"{unit_object['type']}_armour"]
 
+        # The damage a unit will cause is always at least 1. However, if the attack speed is smaller #
+        # the unit will cause less than 1 damage per second 
+        if counter_value == 0:  
+            counter_value = 1
+
         counter_object.append((f"{unit_object['name']}", (counter_value * unit_object["attack_speed"]), (resources_cost)))
     
     return(sorted(counter_object, key = lambda x: x[1], reverse=True))
-
-
 
 print(counter_unit("unit_1", create_units(), None))
 

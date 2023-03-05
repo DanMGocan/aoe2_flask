@@ -7,3 +7,6 @@ Database to be used for:
 - statistics
 
 Return proper 404s
+Multi unit counter
+Bonus damages of the attacking unit stack
+Add trample damage to specific units, both radius and value
