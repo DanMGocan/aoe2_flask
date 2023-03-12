@@ -41,22 +41,17 @@ def units_extractor(generic_location, unique_location, exceptions):
     def get_unique_units():
         new_request = requests.get(unique_location)
         soup = BeautifulSoup(new_request.content, "html.parser")
-        mother_table = soup.find(attrs={"class": "fandom-table"}).find_all("tr")
+        mother_table = soup.find(attrs={"class": "fandom-table"}).find("tbody").find_all("tr")
 
-        for table_row in mother_table:
-            print(table_row.find_all("tr").find("td").find("a")[1]["href"])
-
-
-
-        # for index, element in enumerate(mother_table):
-        #     if element.find("td"):
-        #         print(element.find_all("a")[1]("href"))
-        #     else:
-        #         continue 
-
-
-
-    # get_generic_units()
+        for index, element in enumerate(list(mother_table)):
+            all_row_data = list(element.find_all("td"))
+            for index1, element1 in enumerate(all_row_data):
+                if index1 == 1:
+                    table_cells = list(element1.find_all("a"))
+                    if len(table_cells) == 2:
+                        all_units["Castle"].append(table_cells[1]['href'])
+        
+    get_generic_units()
     time.sleep(1)
     get_unique_units()
 
@@ -65,42 +60,3 @@ def units_extractor(generic_location, unique_location, exceptions):
 all_units_links = units_extractor(generic_location, unique_location, exceptions)
 print(all_units_links)
 
-
-# def units_extractor(links, exceptions):
-
-#     all_units = []
-
-#     for link in links:
-
-#         # Creating the request and the BS object
-#         new_request = requests.get(link)
-#         soup = BeautifulSoup(new_request.content, "html.parser")
-
-#         # Gathering all the attributes of a unit
-#         result = soup.find_all("table", {"class" : "article-table"})
-#         x = open("test1.py", "a")
-#         x.write(result)
-#         x.close()
-        
-#         for element in result:
-#             for index, i in enumerate(element):
-#                 for index, j in enumerate(i):
-#                     for index, k in enumerate(j):
-#                         try:
-#                             unit_link = k.find("a")["href"]
-#                             unit_full_link = f'https://ageofempires.fandom.com{unit_link} \n'
-#                             if unit_link not in exceptions and unit_full_link not in all_units:
-#                                 all_units.append(unit_full_link)
-#                         except:
-#                             pass
-#         time.sleep(1)
-    
-
-#     return all_units
-
-# all_unit_links = units_extractor(links, exceptions=[])
-
-# f = open("all_unit_links.py", "a")
-# for element in all_unit_links:
-#     f.write(f'"{str(element)}"\n')
-# f.close()
