@@ -31,12 +31,23 @@ def units_extractor(generic_location, unique_location, exceptions):
         for index, html_id in enumerate(list(all_units.keys())):
             # Getting the correct start location, by using the "id=dict_key as an anchor"
             starting_point = soup.find(id=f'{html_id}').find_previous().find_next_sibling().find_next_sibling("ul").find_all("li")
-            for index, list_container in enumerate(starting_point):
-                # Going throug every element in every <li> list to get the href of the unit
-                unit_link = list_container.find_all("a")[1]["href"]
 
-                if unit_link not in exceptions:
-                    all_units[f'{html_id}'].append(unit_link)
+            # Exception for the Villager unit (as the wiki page has 2 <li> elements)
+            if html_id == "Town_Center":
+                for index, list_container in enumerate(starting_point):
+                    # Going throug every element in every <li> list to get the href of the unit
+                    unit_link = list_container.find_all("a")[2]["href"]
+
+                    if unit_link not in exceptions:
+                        all_units[f'{html_id}'].append(f"https://ageofempires.fandom.com/{unit_link}")
+
+            else:
+                for index, list_container in enumerate(starting_point):
+                    # Going throug every element in every <li> list to get the href of the unit
+                    unit_link = list_container.find_all("a")[1]["href"]
+
+                    if unit_link not in exceptions:
+                        all_units[f'{html_id}'].append(f"https://ageofempires.fandom.com/{unit_link}")
     
     def get_unique_units():
         new_request = requests.get(unique_location)
@@ -49,7 +60,7 @@ def units_extractor(generic_location, unique_location, exceptions):
                 if index1 == 1:
                     table_cells = list(element1.find_all("a"))
                     if len(table_cells) == 2:
-                        all_units["Castle"].append(table_cells[1]['href'])
+                        all_units["Castle"].append(f"https://ageofempires.fandom.com/{table_cells[1]['href']}")
         
     get_generic_units()
     time.sleep(1)
@@ -58,5 +69,3 @@ def units_extractor(generic_location, unique_location, exceptions):
     return all_units
 
 all_units_links = units_extractor(generic_location, unique_location, exceptions)
-print(all_units_links)
-

@@ -4,4 +4,5 @@ from wtforms.validators import DataRequired
 
 class UnitCounter(FlaskForm):
     unit_name = StringField("Unit name")
+    
     submit = SubmitField("Submit")
