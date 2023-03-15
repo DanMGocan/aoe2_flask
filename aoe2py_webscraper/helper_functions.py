@@ -9,7 +9,6 @@ def find_type(param):
         types.append(element.string)
     return types
 
-
 # Function to create a dictionary from the Training section, with all the buildings
 def find_training_time(param):
     # Taking all buildings
