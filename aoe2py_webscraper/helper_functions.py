@@ -1,39 +1,128 @@
+# Using functions to extract the data, as we need to check for errors and issues #
+
 from os import error
+import re
 from bs4 import BeautifulSoup
 
-# Function to find the type of a unit when more than one type is given
-def find_type(param):
-    types = []
-    all_anchors = param.find(attrs={"data-source": "Type"}).div.find_all("a")
-    for element in all_anchors: # function to return a list, even if one element to preserve data integrity
-        types.append(element.string)
-    return types
 
-# Function to create a dictionary from the Training section, with all the buildings
-def find_training_time(param):
-    # Taking all buildings
-    all_buildings = []
-    all_training_times = []
 
-    for element in param.find(attrs={"data-source": "Building"}).div.find_all("a"):
-        if element.string:
-            all_buildings.append(element.get_text())
+# Self explanatory #
 
-    for element in param.find(attrs={"data-source": "TrainTime"}).div.find_all("span"):
-        if element.string:
-            all_training_times.append(element.get_text())
+class UnitsDataExtractor:
+    # Variable to hold all the errors #
 
-    new_dict = dict(zip(all_buildings, all_training_times))
+    def __init__(self, soup):
+        self.soup = soup
+        self.errors_log = {}
 
-    return new_dict
-
-# Function to find the costs in resources for units
-def find_cost(param):
-    new_dict = {}
-    for resource in ["Food", "Wood", "Gold", "Stone"]:
+    def get_name(self):
         try:
-            new_dict[resource] = param.find(attrs={"data-source": f"{resource}"}).div.string
+            return self.soup.find("h2", {"class": "pi-title"}).text
+        except Exception as e:
+            self.errors_log["NameError"] = str(e)
+
+    def get_added_in(self):
+        try:
+            return self.soup.find("div", {"data-source": "Intro"}).find("i").find("a").text
+        except Exception as e:
+            self.errors_log["AddedInError"] = str(e)
+
+    def get_type(self):
+        try:
+            if (self.soup.find("div", {"data-source": "Type"}).find("div").find("a").text):
+                return self.soup.find("div", {"data-source": "Type"}).find("div").find("a").text
+            else:
+                return "Generic"
+        except Exception as e:
+            self.errors_log["TypeError"] = str(e)
+
+    def get_civilization(self):
+
+        try:
+            check_for_generic = self.soup.find("div", {"data-source": "Civilization"}).find("div", {"class": "pi-data-value"}).text
+            number_of_civilizations = self.soup.find("div", {"data-source": "Civilization"}).find("div", {"class": "pi-data-value"}).find_all("a", {"title": True})
+            list_of_civilizations = []
+
+            if len(number_of_civilizations) == 0 or "All" in check_for_generic:
+                return "Generic"
+            else:
+                for element in number_of_civilizations:
+                    list_of_civilizations.append(element.text)
+                
+                return list_of_civilizations
+                
+        except Exception as e:
+            self.errors_log["CivError"] = e
+
+    def get_age_available(self):
+        try:
+            return self.soup.find("div", {"data-source": "Age"}).find("div", {"class": "pi-data-value"}).select_one(":nth-child(2)").text
+        except Exception as e:
+            self.errors_log["AgeError"] = str(e)
+
+    def get_training_buildings(self):
+
+        try: 
+            main_building = self.soup.find("div", {"data-source": "Building"}).find("div", {"class": "pi-data-value"}).select_one(":nth-child(2)").text
+
+            if len((self.soup.find("div", {"data-source": "Building"}).find("div", {"class": "pi-data-value"})).find_all(recursive=False)) <= 2:
+                return [main_building]
+            
+            else:
+                try:
+                    secondary_building = self.soup.find("div", {"data-source": "Building"}).find("div", {"class": "pi-data-value"}).find("span").select_one(":nth-child(2)").text
+                    return [main_building, secondary_building]
+                except:
+                    secondary_building = self.soup.find("div", {"data-source": "Building"}).find("div", {"class": "pi-data-value"}).select_one(":nth-child(4)").text
+                    return [main_building, secondary_building]
+                
+        except Exception as e:
+            self.errors_log["TrainBuildingError"] = e
+
+    def get_cost(self):
+
+
+        # Food cost #
+        try:
+            food_container = self.soup.find("div", {"data-source": "Food"}).find("div", {"class": "pi-data-value"})
+            if len(food_container.find_all("span")) > 0:
+                food = food_container.find("span").text
+            else:
+                food = food_container.text
         except:
-            new_dict[resource] = 0
-    return new_dict
+            food = 0
+
+        # Wood cost #
+        try:
+            wood_container = self.soup.find("div", {"data-source": "Wood"}).find("div", {"class": "pi-data-value"})
+            if len(wood_container.find_all("span")) > 0:
+                wood = wood_container.find("span").text
+            else:
+                wood = wood_container.text
+        except:
+                wood = 0
+
+        # Gold cost #
+        try: 
+            gold_container = self.soup.find("div", {"data-source": "Gold"}).find("div", {"class": "pi-data-value"})
+            if len(gold_container.find_all("span")) > 0:
+                gold = wood_container.find("span").text
+            else:
+                gold = wood_container.text
+        
+        except:
+            gold = 0
+
+        cost = {
+            "food": food,
+            "wood": wood,
+            "gold": gold
+        }
+
+        return cost
+
+        # except Exception as e:
+        #     self.errors_log["CostError"] = str(e)
+
+
 
