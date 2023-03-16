@@ -106,9 +106,9 @@ class UnitsDataExtractor:
         try: 
             gold_container = self.soup.find("div", {"data-source": "Gold"}).find("div", {"class": "pi-data-value"})
             if len(gold_container.find_all("span")) > 0:
-                gold = wood_container.find("span").text
+                gold = gold_container.find("span").text
             else:
-                gold = wood_container.text
+                gold = gold_container.text
         
         except:
             gold = 0
