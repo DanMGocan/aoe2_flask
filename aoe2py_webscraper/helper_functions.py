@@ -81,12 +81,14 @@ class UnitsDataExtractor:
 
     def get_cost(self):
 
-
         # Food cost #
         try:
             food_container = self.soup.find("div", {"data-source": "Food"}).find("div", {"class": "pi-data-value"})
             if len(food_container.find_all("span")) > 0:
-                food = food_container.find("span").text
+                if len(food_container.find_all("span")) == 4: # exception added for Plumed Archer
+                    food = food_container.select_one(":nth-child(2)").text
+                else:
+                    food = food_container.find("span").text
             else:
                 food = food_container.text
         except:
@@ -96,7 +98,10 @@ class UnitsDataExtractor:
         try:
             wood_container = self.soup.find("div", {"data-source": "Wood"}).find("div", {"class": "pi-data-value"})
             if len(wood_container.find_all("span")) > 0:
-                wood = wood_container.find("span").text
+                if len(wood_container.find_all("span")) == 4: # exception added for Plumed Archer
+                    wood = wood_container.select_one(":nth-child(2)").text
+                else:
+                    wood = wood_container.find("span").text
             else:
                 wood = wood_container.text
         except:
@@ -106,7 +111,10 @@ class UnitsDataExtractor:
         try: 
             gold_container = self.soup.find("div", {"data-source": "Gold"}).find("div", {"class": "pi-data-value"})
             if len(gold_container.find_all("span")) > 0:
-                gold = gold_container.find("span").text
+                if len(gold_container.find_all("span")) == 4: # exception added for Plumed Archer
+                    gold = gold_container.select_one(":nth-child(2)").text
+                else:
+                    gold = gold_container.find("span").text
             else:
                 gold = gold_container.text
         
@@ -114,9 +122,9 @@ class UnitsDataExtractor:
             gold = 0
 
         cost = {
-            "food": food,
-            "wood": wood,
-            "gold": gold
+            "food": 0 if food == 0 else int(food),
+            "wood": 0 if wood == 0 else int(wood),
+            "gold": 0 if gold == 0 else int(gold)
         }
 
         return cost
