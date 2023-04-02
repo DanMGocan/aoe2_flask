@@ -122,9 +122,9 @@ class UnitsDataExtractor:
             gold = 0
 
         cost = {
-            "food": 0 if food == 0 else int(food),
-            "wood": 0 if wood == 0 else int(wood),
-            "gold": 0 if gold == 0 else int(gold)
+            "food": 0 if food == 0 else int(food.replace(",", "")),
+            "wood": 0 if wood == 0 else int(wood.replace(",", "")),
+            "gold": 0 if gold == 0 else int(gold.replace(",", ""))
         }
 
         return cost
