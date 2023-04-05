@@ -4,12 +4,16 @@ from os import error
 import re
 from bs4 import BeautifulSoup
 
+# Class with function to extract all information about technologies #
+class TechDataExtractor:
+    pass
 
+# Class with function to extract all information about civilizations #
+class CivDataExtractor:
+    pass
 
-# Self explanatory #
-
+# Class with function to extract all information about units #
 class UnitsDataExtractor:
-    # Variable to hold all the errors #
 
     def __init__(self, soup):
         self.soup = soup

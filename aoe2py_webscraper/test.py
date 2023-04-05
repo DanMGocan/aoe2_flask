@@ -16,7 +16,7 @@ for building in unit_links:
         parent_table = soup.find('aside')
         UnitsData = UnitsDataExtractor(parent_table)
 
-        print("Extracting data from " + url)
+        #print("Extracting data from " + url)
         unit_info = {
             "name": UnitsData.get_name(),
             "added_in": UnitsData.get_added_in(),
@@ -30,9 +30,7 @@ for building in unit_links:
         }
 
         all_units[unit_info["name"]] = unit_info
-        time.sleep(1)
-
-
+        #time.sleep(1)
 
 with open("units_db.py", "w") as f:
     f.write(pprint.pformat(all_units, indent=2, compact=False, depth=3, sort_dicts=False))
